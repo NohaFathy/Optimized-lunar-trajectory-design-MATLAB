@@ -1,0 +1,25 @@
+function dydt = rates(t, y, jd0, ttt, days, mu_m, mu_e)
+jd = jd0 -(ttt-t)/days;
+X = y(1);
+Y = y(2);
+Z = y(3);
+vX = y(4);
+vY = y(5);
+vZ = y(6);
+r = [X Y Z ]';
+r_mag =norm(r);
+[rm,~] = simpsons_lunar_ephemeris(jd);
+rm_mag = norm(rm);
+rms = rm-r;
+rms_mag = norm(rms);
+a_earth = -mu_e *r /r_mag^3;
+a_moon = mu_m*(rms/rms_mag^3 - rm/rm_mag^3);
+a = a_earth + a_moon;
+aX= a(1);
+aY= a(2);
+aZ= a(3);
+dydt = [vX vY vZ aX aY aZ]';  
+%y = [X; Y; Z vX; vY; vZ];
+%fprintf('y = [%.4f, %.4f, %.4f, %.4f, %.4f, %.4f]\n', y);
+%fprintf('dydt = [%.4f, %.4f, %.4f, %.4f, %.4f, %.4f]\n', dydt);
+end
